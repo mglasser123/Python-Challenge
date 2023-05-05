@@ -1,38 +1,78 @@
+#Import the moduels
 import os
 import csv
 
+#Set the path for csv file
 election_csv = os.path.join('Resources', 'election_data.csv')
 
-count = 0
+#Store data as lists
+list_of_candidates = []
 candidate = []
-unique_candidate = []
 percentage_vote = []
-votes = []
+num_votes = []
 
+#Create variable and set it equal to zero
+count = 0
+
+#Read in csv file and declare header
 with open(election_csv) as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=",")
     csv_header = next(csv_file)
-    
+
+#Begin the for loop    
     for row in csv_reader:
+        
+#Tally the total votes
         count = count + 1
-        candidate.append(row[2])
-    for i in set(candidate):
-        unique_candidate.append(i)
-        v = candidate.count(i)
-        votes.append(v)
+        
+#Add each candidate to the list of candidates
+        list_of_candidates.append(row[2])
+    
+#We need to get only 3 candidates, so we need to find the unique names. We use the set function to do this
+    for i in set(list_of_candidates):
+        candidate.append(i)
+
+#Calculate the number of votes for each candidate
+        v = list_of_candidates.count(i)
+        num_votes.append(v)
+        
+#Calculate the percentage of votes each candidate got and round to 3 decimal places
         x = round((v/count) * 100, 3)
         percentage_vote.append(x)
         
+#Calculate the winning vote count
+    winning_number = max(num_votes)
 
-    win = max(votes)
-    winning_candidate = unique_candidate[votes.index(win)]
+#From the winning vote count we can determine the winner using index function
+    winning_candidate = candidate[num_votes.index(winning_number)]
 
-    print("Total Votes: " + str(count))
-    for i in range(len(unique_candidate)):
-        print(unique_candidate[i] + ": " + str(percentage_vote[i]) +"% (" + str(votes[i])+ ")")
-    print("The Winner is: " + winning_candidate)
 
-        
+#Print results to terminal
+print("Election Results")
+print("-------------------------")
+print("Total Votes: " + str(count))
+for row in range(len(candidate)):
+    print(candidate[row] + ": " + str(percentage_vote[row]) +"% (" +str(num_votes[row])+ ")")
+print("-------------------------")
+print("The Winner is: " + winning_candidate)
+print("-------------------------")
+
+#Write the text file with the final analysis
+with open("Analysis/analysis.txt", "w") as out_file:
+    out_file.write("Election Results")
+    out_file.write("-------------------------")
+    out_file.write("Total Votes: " + str(count))
+    for row in range(len(candidate)):
+        out_file.write(candidate[row] + ": " + str(percentage_vote[row]) +"% (" +str(num_votes[row])+ ")")
+    out_file.write("-------------------------")
+    out_file.write("The Winner is: " + winning_candidate)
+    out_file.write("-------------------------")
+
+
+
+
+
+     
 
 
     
